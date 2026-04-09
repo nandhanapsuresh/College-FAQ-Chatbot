@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clara - LEAD College Admissions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f3f6fb; --panel:#ffffff; --accent:#2b6cb0; --muted:#6b7280;
+      --user:#dcf8c6; --staff:#eef2ff;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body{ 
+      margin:0; 
+      min-height:100vh; 
+      background:linear-gradient(180deg,#eef7ff 0%,var(--bg) 100%); 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      padding:16px;
+    }
+    
+    .container{ 
+      width:100%; 
+      max-width:1200px;
+      height: 90vh;
+      max-height: 900px;
+      background:var(--panel); 
+      box-shadow:0 8px 30px rgba(19,38,84,0.08); 
+      border-radius:12px; 
+      overflow:hidden; 
+      display:grid; 
+      grid-template-columns:320px 1fr;
+    }
+    
+    .left{ 
+      background:linear-gradient(180deg,#2b6cb0,#3676c6); 
+      color:#fff; 
+      padding:24px; 
+      display:flex; 
+      flex-direction:column; 
+      gap:16px;
+    }
+    
+    .brand{ 
+      font-size:18px; 
+      font-weight:700; 
+      display:flex; 
+      gap:12px; 
+      align-items:center;
+    }
+    
+    .brand .logo{ 
+      width:44px; 
+      height:44px; 
+      background:rgba(255,255,255,0.15); 
+      border-radius:8px; 
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      font-weight:700; 
+    }
+    
+    .info{ 
+      font-size:14px; 
+      color:rgba(255,255,255,0.92); 
+      line-height:1.45;
+    }
+    
+    .tips{ 
+      margin-top:auto; 
+      font-size:13px; 
+      opacity:0.95; 
+      background:rgba(255,255,255,0.06); 
+      padding:10px; 
+      border-radius:8px;
+    }
+    
+    .right{ 
+      padding:20px; 
+      display:flex; 
+      flex-direction:column; 
+      gap:12px;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    .chat-window{
+      background:linear-gradient(180deg,#fbfdff,#ffffff);
+      border:1px solid #eef2f7;
+      border-radius:10px;
+      padding:18px;
+      flex: 1;
+      overflow-y:auto;
+      overflow-x:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      scroll-behavior: smooth;
+      min-height: 0;
+    }
+    
+    .messages{ 
+      display:flex; 
+      flex-direction:column; 
+      gap:10px; 
+    }
+    
+    .msg{ 
+      max-width:78%; 
+      padding:10px 12px; 
+      border-radius:12px; 
+      font-size:14px; 
+      line-height:1.5;
+      box-shadow:0 1px 0 rgba(0,0,0,0.02);
+      word-wrap: break-word;
+      white-space: pre-wrap; /* CRITICAL: Preserves line breaks and formatting */
+    }
+    
+    .staff{ 
+      align-self:flex-start; 
+      background:var(--staff); 
+      color:#06304a; 
+      border-radius:10px 12px 12px 12px; 
+    }
+    
+    .user{ 
+      align-self:flex-end; 
+      background:var(--user); 
+      color:#1b4332; 
+      border-radius:12px 12px 10px 12px; 
+      text-align:right;
+    }
+    
+    .controls{ 
+      display:flex; 
+      gap:10px; 
+      align-items:center;
+      flex-shrink: 0;
+    }
+    
+    .input{ 
+      flex:1; 
+      display:flex; 
+      gap:8px;
+    }
+    
+    input[type="text"]{ 
+      width:100%; 
+      padding:10px 12px; 
+      border-radius:8px; 
+      border:1px solid #3676c6; 
+      outline:none; 
+      font-size:14px; 
+      background:#fff; 
+      transition:border-color 0.2s ease;
+    }
+    
+    input:focus{
+      border-color: var(--accent);
+    }
+    
+    button.primary{ 
+      background:var(--accent); 
+      border:none; 
+      color:#fff; 
+      padding:10px 14px; 
+      border-radius:8px; 
+      cursor:pointer; 
+      font-weight:600;
+      white-space: nowrap;
+    }
+    
+    button.primary:hover{
+      background:#234e8a;
+    }
+    
+    button.ghost{ 
+      background:transparent; 
+      border:1px solid #dbe9ff; 
+      color:var(--accent); 
+      padding:8px 12px; 
+      border-radius:8px; 
+      cursor:pointer;
+      font-size:13px;
+      white-space: nowrap;
+    }
+    
+    button.ghost:hover{ 
+      background:#f3f8ff; 
+    }
+    
+    .small{ 
+      font-size:13px; 
+      color:var(--muted);
+      flex-shrink: 0;
+    }
+    
+    #chat-box { 
+      display:flex; 
+      flex-direction:column; 
+      gap:10px; 
+    }
+    
+    .quick-actions{ 
+      display:flex; 
+      flex-wrap:wrap; 
+      gap:8px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width:1024px){
+      .container{ 
+        grid-template-columns:280px 1fr;
+        height: 85vh;
+      }
+      .left { padding: 20px; }
+      .right { padding: 16px; }
+    }
+
+    @media (max-width:768px){
+      body { padding: 8px; }
+      .container{ 
+        grid-template-columns:1fr;
+        height: 95vh;
+        max-height: none;
+      }
+      .left{ display:none; }
+      .right { padding: 12px; gap: 10px; }
+      .chat-window { padding: 12px; }
+      .msg { max-width: 85%; font-size: 13px; }
+      .quick-actions button { font-size: 12px; padding: 6px 10px; }
+    }
+
+    @media (max-width:480px){
+      body { padding: 4px; }
+      .container { border-radius: 8px; height: 98vh; }
+      .right { padding: 10px; gap: 8px; }
+      .chat-window { padding: 10px; }
+      input[type="text"] { font-size: 16px; padding: 8px 10px; }
+      button.primary { padding: 8px 12px; font-size: 14px; }
+      .quick-actions { gap: 6px; }
+      .quick-actions button { font-size: 11px; padding: 5px 8px; }
+      h2 { font-size: 18px; }
+    }
+
+    @media (max-width:900px) and (orientation: landscape){
+      .container { height: 98vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="left">
+      <div class="brand">
+        <div class="logo">CL</div>
+        Clara - LEAD College
+      </div>
+      <div class="info">
+        Hi! I'm Clara, your admissions assistant for LEAD College (Autonomous), Palakkad. I'm here to answer all your questions about MBA/MCA programs.
+      </div>
+      <div class="tips">
+        <strong>About Me:</strong><br>
+        🤖 Name: Clara<br>
+        📍 College: LEAD, Palakkad<br>
+        🎓 Programs: MBA, MCA<br>
+        💬 Ask me anything!
+      </div>
+    </aside>
+
+    <main class="right">
+      <h2 style="margin:0">Chat with Clara</h2>
+
+      <div class="chat-window" id="chat-window">
+        <div id="chat-box" class="messages"></div>
+      </div>
+
+      <div class="controls">
+        <div class="input">
+          <input id="chat-input" type="text" placeholder="Ask Clara about admissions..." />
+        </div>
+        <button id="send-btn" class="primary">Send</button>
+      </div>
+
+      <div class="quick-actions">
+        <button class="ghost" data-quick="Tell me about MBA program">MBA Details</button>
+        <button class="ghost" data-quick="Tell me about MCA program">MCA Details</button>
+        <button class="ghost" data-quick="What are the eligibility criteria?">Eligibility</button>
+        <button class="ghost" data-quick="What is the fee structure?">Fee Structure</button>
+        <button class="ghost" data-quick="What entrance exams are accepted?">Entrance Exams</button>
+        <button class="ghost" data-quick="Tell me about campus facilities">Facilities</button>
+        <button class="ghost" data-quick="Hostel information">Hostel Info</button>
+        <button class="ghost" data-quick="How do I apply?">Application</button>
+        <button class="ghost" data-quick="Contact details">Contact</button>
+      </div>
+
+      <div class="small" style="font-size: 12px;">Clara - Powered by LEAD College, Palakkad</div>
+    </main>
+  </div>
+
+  <script>
+    const history = [];
+    let isFirstLoad = true;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (isFirstLoad) {
+        const greetingMessage = `Hello! 👋 I'm Clara, your admissions assistant at LEAD College (Autonomous), Palakkad.
+
+I'm here to help you with:
+
+✅ MBA/MCA program details
+✅ Eligibility criteria
+✅ Application process
+✅ Fee structure
+✅ Campus facilities
+✅ Hostel information
+
+Feel free to ask me anything about admissions. How can I assist you today?`;
+        
+        appendBubble("assistant", greetingMessage);
+        isFirstLoad = false;
+      }
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+      appendBubble("user", text);
+      input.value = "";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, history })
+        });
+        const data = await res.json();
+        if (data.reply) {
+          appendBubble("assistant", data.reply);
+        } else {
+          appendBubble("assistant", data.error || "Sorry, something went wrong.");
+        }
+      } catch (e) {
+        appendBubble("assistant", "Network error. Please try again.");
+      }
+    }
+
+    function appendBubble(role, content) {
+  const box = document.getElementById("chat-box");
+  const chatWindow = document.getElementById("chat-window");
+  const div = document.createElement("div");
+  
+  div.className = role === "user" ? "msg user" : "msg staff";
+  
+  // Clean up any accidental markdown
+  let cleanContent = content
+    .replace(/\*\*/g, '')  // Remove all ** 
+    .replace(/\*/g, '');   // Remove all *
+  
+  div.textContent = cleanContent;
+  box.appendChild(div);
+  
+  history.push({ role, content: cleanContent });
+  
+  setTimeout(() => {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }, 50);
+}
+
+    document.getElementById("send-btn").addEventListener("click", sendMessage);
+    document.getElementById("chat-input").addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    document.querySelectorAll("[data-quick]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const val = btn.getAttribute("data-quick");
+        document.getElementById("chat-input").value = val;
+        sendMessage();
+      });
+    });
+  </script>
+</body>
+</html>
