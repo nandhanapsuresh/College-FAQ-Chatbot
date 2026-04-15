@@ -17,7 +17,11 @@ api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("OPENAI_API_KEY environment variable is not set")
 
-client = OpenAI(api_key=api_key)
+# client = OpenAI(api_key=api_key)
+client = OpenAI(
+    api_key=api_key,
+    base_url=os.getenv("OPENAI_BASE_URL")
+)
 
 # College website URL
 COLLEGE_WEBSITE = "https://lead.ac.in/"
@@ -221,25 +225,47 @@ YOUR COMMUNICATION STYLE:
 Always respond in a helpful, professional manner with clean, structured formatting."""
 
 
-def call_llm(messages: List[Dict[str, str]], website_context: str = "") -> str:
-    """Call OpenAI API with error handling and optional website context"""
-    try:
-        # Add website context to system prompt if available
-        system_content = messages[0]["content"]
-        if website_context:
-            system_content += f"\n\nRECENT WEBSITE INFORMATION FROM https://lead.ac.in/:\n{website_context}"
-            messages[0]["content"] = system_content
+# def call_llm(messages: List[Dict[str, str]], website_context: str = "") -> str:
+#     """Call OpenAI API with error handling and optional website context"""
+#     try:
+#         # Add website context to system prompt if available
+#         system_content = messages[0]["content"]
+#         if website_context:
+#             system_content += f"\n\nRECENT WEBSITE INFORMATION FROM https://lead.ac.in/:\n{website_context}"
+#             messages[0]["content"] = system_content
 
-        resp = client.chat.completions.create(
-            model="gpt-4o-mini",
+#         resp = client.chat.completions.create(
+#             # model="gpt-4o-mini",
+#             model="openchat/openchat-3.5",
+#             messages=messages,
+#             temperature=0.23,
+#             max_tokens=700,
+#         )
+#         return resp.choices[0].message.content.strip()
+#     except Exception as e:
+#         print(f"OpenAI API Error: {e}")
+#         return "I'm experiencing technical difficulties. Please try again or contact the admissions office directly."
+def call_llm(messages, website_context=""):
+    try:
+        if website_context:
+            messages[0]["content"] += f"\n\nWebsite Info:\n{website_context}"
+
+        response = client.chat.completions.create(
+            model="meta-llama/llama-3-8b-instruct",
             messages=messages,
-            temperature=0.23,
+            temperature=0.3,
             max_tokens=700,
+            extra_headers={
+                "HTTP-Referer": "http://localhost:5000",
+                "X-Title": "LEAD Chatbot"
+            }
         )
-        return resp.choices[0].message.content.strip()
+
+        return response.choices[0].message.content
+
     except Exception as e:
-        print(f"OpenAI API Error: {e}")
-        return "I'm experiencing technical difficulties. Please try again or contact the admissions office directly."
+        print("ERROR:", e)
+        return "API error occurred"
 
 
 @app.route("/")
