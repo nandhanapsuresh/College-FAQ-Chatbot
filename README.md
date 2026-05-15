@@ -236,8 +236,3 @@ pip install -r requirements.txt
 MCA Student — LEAD College (Autonomous), Palakkad
 [LinkedIn](https://linkedin.com/in/nandhana-p-suresh) • nandhanapsuresh75@gmail.com
 
----
-
-## License
-
-This project is for educational purposes. All college data belongs to LEAD College (Autonomous), Palakkad.
